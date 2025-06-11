@@ -32,8 +32,8 @@
       device-orientation-permission-ui="enabled: true">
       <a-camera position="0 0 0" look-controls="enabled: false" wasd-controls-enabled="false" active="true"></a-camera>
       <!-- Lighting -->
-      <a-light type="directional" color="#FFF" intensity="0.7" position="0.5 1 1"></a-light>
-      <!-- <a-light type="ambient" color="#FFF" intensity="0.5"></a-light> -->
+      <!-- <a-light type="directional" color="#FFF" intensity="0.7" position="0.5 1 1"></a-light> -->
+      <a-light type="ambient" color="#FFF" intensity="1"></a-light>
 
       <!-- Assets -->
       <a-assets>
@@ -43,12 +43,13 @@
         <a-asset-item id="shrimpAsset" src="./assets/models/Shrimp.glb"></a-asset-item>
       </a-assets>
 
-      <a-entity mindar-face-target="anchorIndex: 168" model-selector-handler shrimp-trigger>
+      <a-entity mindar-face-target="anchorIndex: 168" model-selector-handler shrimp-trigger material="roughness: 1">
         <a-gltf-model id="chopstickModel" rotation="0 0 0" position="0 -0.85 0" scale="8 8 8" src="#chopstickAsset"
           visible="false">
         </a-gltf-model>
 
-        <a-gltf-model id="currentBowl" rotation="0 0 0" position="0 -0.85 0" scale="8 8 8" src="#bowlAAsset">
+        <a-gltf-model id="currentBowl" rotation="0 0 0" position="0 -0.85 0" scale="0.25 0.2 0.2" src="#bowlAAsset"
+          material="roughness: 0; metalness: 0">
         </a-gltf-model>
 
         <a-gltf-model id="shrimpModelEntity" rotation="0 0 0" position="0 -0.85 0" scale="8 8 8" src="#shrimpAsset"
