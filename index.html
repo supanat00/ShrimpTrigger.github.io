@@ -27,8 +27,9 @@
 <body>
   <div class="scene-overlay">
     <!-- === Scene AR === --> <!-- embedded -->
-    <a-scene id="myScene" mindar-face color-space=" sRGB" renderer="colorManagement: true, physicallyCorrectLights"
-      vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: true">
+    <a-scene id="myScene" mindar-face embedded color-space=" sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: true">
       <a-camera position="0 0 0" look-controls="enabled: false" wasd-controls-enabled="false" active="true"></a-camera>
       <!-- Lighting -->
       <a-light type="directional" color="#FFF" intensity="0.7" position="0.5 1 1"></a-light>
