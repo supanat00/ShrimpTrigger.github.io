@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mama</title>
+
+  <!-- A-Frame and MindAR libraries -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-face-aframe.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+  <script src="https://unpkg.com/h264-mp4-encoder/embuild/dist/h264-mp4-encoder.web.js"></script>
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js"></script> -->
+
+  <!-- Your custom scripts -->
+  <script type="module" src="script/camera.js"></script>
+  <!-- Register components before the scene uses them -->
+  <script type="module" src="script/model-selector-handler.js"></script>
+  <script type="module" src="script/shrimp-trigger.js"></script>
+
+  <script src="./script/face-api.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="scene-overlay">
+    <!-- === Scene AR === --> <!-- embedded -->
+    <a-scene id="myScene" mindar-face color-space=" sRGB" renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: true">
+      <a-camera position="0 0 0" look-controls="enabled: false" wasd-controls-enabled="false" active="true"></a-camera>
+      <!-- Lighting -->
+      <a-light type="directional" color="#FFF" intensity="0.7" position="0.5 1 1"></a-light>
+      <!-- <a-light type="ambient" color="#FFF" intensity="0.5"></a-light> -->
+
+      <!-- Assets -->
+      <a-assets>
+        <a-asset-item id="bowlAAsset" src="./assets/models/bowlA.glb"></a-asset-item>
+        <a-asset-item id="bowl2Asset" src="./assets/models/bowl2.glb"></a-asset-item>
+        <a-asset-item id="chopstickAsset" src="./assets/models/chopstick.glb"></a-asset-item>
+        <a-asset-item id="shrimpAsset" src="./assets/models/Shrimp.glb"></a-asset-item>
+      </a-assets>
+
+      <a-entity mindar-face-target="anchorIndex: 168" model-selector-handler shrimp-trigger>
+        <a-gltf-model id="chopstickModel" rotation="0 0 0" position="0 -0.85 0" scale="8 8 8" src="#chopstickAsset"
+          visible="false">
+        </a-gltf-model>
+
+        <a-gltf-model id="currentBowl" rotation="0 0 0" position="0 -0.85 0" scale="8 8 8" src="#bowlAAsset">
+        </a-gltf-model>
+
+        <a-gltf-model id="shrimpModelEntity" rotation="0 0 0" position="0 -0.85 0" scale="8 8 8" src="#shrimpAsset"
+          visible="false" animation-mixer>
+        </a-gltf-model>
+      </a-entity>
+    </a-scene>
+  </div>
+  <!-- === Custom UI Layer === -->
+  <div class="ui-overlay">
+    <!-- Model Selector UI -->
+    <div id="modelSelectorContainer">
+      <button class="model-select-button active" data-model-src="#bowlAAsset">Bowl A</button>
+      <button class="model-select-button" data-model-src="#bowl2Asset">Bowl B</button>
+    </div>
+    <!--  Bottom Overlay UI -->
+    <div class="bottom-overlay">
+      <div class="camera-controls" id="cameraControls" style="display: flex;">
+        <div class="photo-button" id="photoButton">
+          <div class="circle"></div>
+          <div class="ring">
+            <svg viewBox="0 0 32 32">
+              <circle class="circle" r="15" cx="16" cy="16" fill="transparent" transform="rotate(-90 16 16)"
+                stroke="#FFFFFF">
+              </circle>
+            </svg>
+          </div>
+        </div>
+        <div class="switch-button" id="switchButton">
+          <label>
+            <span class="camera"><svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="13" r="3" stroke="#1C274C" stroke-width="1.5" />
+                <path
+                  d="M2 13.3636C2 10.2994 2 8.76721 2.74902 7.6666C3.07328 7.19014 3.48995 6.78104 3.97524 6.46268C4.69555 5.99013 5.59733 5.82123 6.978 5.76086C7.63685 5.76086 8.20412 5.27068 8.33333 4.63636C8.52715 3.68489 9.37805 3 10.3663 3H13.6337C14.6219 3 15.4728 3.68489 15.6667 4.63636C15.7959 5.27068 16.3631 5.76086 17.022 5.76086C18.4027 5.82123 19.3044 5.99013 20.0248 6.46268C20.51 6.78104 20.9267 7.19014 21.251 7.6666C22 8.76721 22 10.2994 22 13.3636C22 16.4279 22 17.9601 21.251 19.0607C20.9267 19.5371 20.51 19.9462 20.0248 20.2646C18.9038 21 17.3433 21 14.2222 21H9.77778C6.65675 21 5.09624 21 3.97524 20.2646C3.48995 19.9462 3.07328 19.5371 2.74902 19.0607C2.53746 18.7498 2.38566 18.4045 2.27673 18"
+                  stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M19 10H18" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+              </svg></span>
+            <span class="video"><svg width="24px" height="24px" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16 10L18.5768 8.45392C19.3699 7.97803 19.7665 7.74009 20.0928 7.77051C20.3773 7.79703 20.6369 7.944 20.806 8.17433C21 8.43848 21 8.90095 21 9.8259V14.1741C21 15.099 21 15.5615 20.806 15.8257C20.6369 16.056 20.3773 16.203 20.0928 16.2295C19.7665 16.2599 19.3699 16.022 18.5768 15.5461L16 14M6.2 18H12.8C13.9201 18 14.4802 18 14.908 17.782C15.2843 17.5903 15.5903 17.2843 15.782 16.908C16 16.4802 16 15.9201 16 14.8V9.2C16 8.0799 16 7.51984 15.782 7.09202C15.5903 6.71569 15.2843 6.40973 14.908 6.21799C14.4802 6 13.9201 6 12.8 6H6.2C5.0799 6 4.51984 6 4.09202 6.21799C3.71569 6.40973 3.40973 6.71569 3.21799 7.09202C3 7.51984 3 8.07989 3 9.2V14.8C3 15.9201 3 16.4802 3.21799 16.908C3.40973 17.2843 3.71569 17.5903 4.09202 17.782C4.51984 18 5.07989 18 6.2 18Z"
+                  stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg></span>
+            <input type="checkbox" class="input" id="toggleInput">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview UI -->
+  <div id="previewModal" style="display: none;">
+    <div class="preview-content-wrapper">
+      <img id="previewImage" src="" alt="Preview Image" style="display: none;">
+      <div style="position: absolute; top: 5px; right: 5px; z-index: 2;">
+        <button id="closePreview">
+          <svg width="40px" height="40px" viewBox="0 0 24 24" fill="transparent" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 9L15 15M15 9L9 15" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div>
+      <button id="shareImage">บันทึกภาพหรือวิดีโอ</button>
+    </div>
+  </div>
+</body>
+
+</html>

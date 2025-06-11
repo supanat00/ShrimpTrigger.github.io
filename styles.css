@@ -1,0 +1,366 @@
+body,
+html {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.scene-overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ซ่อนปุ่ม VR Mode */
+.a-enter-vr-button {
+  display: none !important;
+}
+
+/* ปิดตัวแสกน Target */
+.mindar-ui-overlay {
+  display: none !important;
+}
+
+/* พื้นหลัง UI หลัก เต็มหน้าจอ */
+.ui-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  pointer-events: none; /* อนุญาตให้คลิกทะลุ overlay หลักได้ */
+}
+
+.bottom-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  /* height: 120px; /* อาจใช้ padding แทน หรือ height: auto */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.356
+  ); /* <<< เปลี่ยนจาก background-color: black และ opacity: 0.7 มาเป็น rgba */
+  display: flex;
+  flex-direction: column; /* จัดเรียงแนวตั้ง */
+  justify-content: center; /* จัดให้อยู่กลางแนวตั้ง */
+  align-items: center; /* จัดให้อยู่กลางแนวนอน */
+  z-index: 999;
+  gap: 15px; /* ระยะห่างระหว่าง input-container และ camera-controls */
+  pointer-events: auto; /* ทำให้ element ภายใน bottom-overlay คลิกได้ */
+}
+
+/* ============== Camera UI ============== */
+/* Overlay */
+.camera-controls {
+  justify-content: center;
+  align-items: center;
+  position: absolute; /* <<< เปลี่ยนเป็น absolute */
+  width: 100%; /* ปรับความกว้างตามต้องการ */
+}
+
+/* === Photo-Button/Rec-Button === */
+.photo-button {
+  width: 80px;
+  height: 80px;
+  position: absolute;
+}
+.circle {
+  position: absolute;
+  top: 12%;
+  left: 12%;
+  bottom: 12%;
+  right: 12%;
+  border-radius: 100%;
+  background-color: #ffffff;
+  opacity: 1;
+  transition: transform 0.25s, width 0.25s, height 0.25s; /* การเปลี่ยนแปลงแบบราบรื่น */
+}
+.ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.ring.recording {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  border-radius: 100%;
+  position: relative;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    .circle {
+      stroke-dashoffset: 0;
+      stroke-dasharray: 300;
+      stroke-width: 1.2;
+      animation: dash 30s linear alternate infinite;
+    }
+  }
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 300;
+  }
+  to {
+    stroke-dashoffset: 200;
+  }
+}
+
+/* สำหรับรูปทรงสี่เหลี่ยมมุมโค้งมนตอนบันทึก */
+.circle.recording {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px; /* ปรับให้น้อยลง */
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #ff5252, #d50000);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25); /* ปรับเงาให้เบาลง */
+  color: #fff;
+  font-family: "Arial", sans-serif;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: absolute;
+  top: 22%;
+  left: 23%;
+  width: 25px; /* ลดขนาดลง */
+  height: 25px; /* ลดขนาดลง */
+  overflow: hidden;
+  animation: heartBeat 0.6s infinite;
+}
+
+.circle.recording:before {
+  font-size: 30px; /* ลดขนาดลง */
+  color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1); /* แสดงหัวใจโดยทันที */
+  transition: transform 0.3s ease-in-out;
+}
+
+.circle.recording:active:before {
+  transform: translate(-50%, -50%) scale(1.2); /* ให้ใหญ่ขึ้นเล็กน้อยเมื่อกด */
+}
+
+.photo-button:active .ring {
+  opacity: 1;
+}
+.photo-button:active .circle {
+  opacity: 0.5;
+}
+
+/* === Switch Button Mode (Capture/Video) === */
+.switch-button {
+  font-size: 17px;
+  position: absolute;
+  right: 5%; /* ตำแหน่งมุมขวาล่าง */
+  display: inline-block;
+  width: 64px;
+  height: 34px;
+}
+
+.switch-button input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #73c0fc;
+  transition: 0.4s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 30px;
+  width: 30px;
+  border-radius: 20px;
+  left: 2px;
+  bottom: 2px;
+  z-index: 2;
+  background-color: #e8e8e8;
+  transition: 0.4s;
+}
+
+.camera svg {
+  position: absolute;
+  top: 6px;
+  left: 36px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+}
+
+.video svg {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+}
+
+.input:focus + .slider {
+  box-shadow: 0 0 1px #183153;
+}
+
+.input:checked + .slider:before {
+  transform: translateX(30px);
+}
+
+/* === Preview Result === */
+#previewModal {
+  position: fixed;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: center; /* Center items vertically */
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  top: 0; /* Align top */
+  left: 0; /* Align left */
+  transform: none; /* Remove transform */
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.7); /* Darker background */
+  padding: 20px; /* Padding around content */
+  box-sizing: border-box;
+  pointer-events: auto;
+  overflow-y: auto; /* Allow scrolling if content is too tall */
+  /* display: none; is controlled by JS */
+}
+
+/* <<< NEW: Style for the content wrapper >>> */
+.preview-content-wrapper {
+  position: relative; /* Positioning context for close button */
+  display: inline-block; /* Allows it to shrink-wrap content */
+  max-width: 90%; /* Max width within modal padding */
+  max-height: calc(
+    100vh - 150px
+  ); /* Max height (viewport minus space for button/padding) */
+  margin-bottom: 25px; /* Space before share button */
+}
+
+/* <<< MODIFY: Style for image/video inside the wrapper >>> */
+#previewModal .preview-content-wrapper #previewImage,
+#previewModal .preview-content-wrapper video#previewVideo {
+  display: block; /* Ensure block display */
+  max-width: 100%; /* Fit wrapper width */
+  max-height: 100%; /* Fit wrapper height */
+  height: auto; /* Maintain aspect ratio */
+  border: 3px solid white;
+  border-radius: 18px; /* <<< Slightly more rounded corners for content */
+  /* margin-bottom is now on wrapper */
+}
+
+/* ปุ่มแชร์ (บันทึก) - No changes needed from previous version */
+#shareImage {
+  display: block;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 40px;
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 30px;
+  font-family: "Kanit", sans-serif;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+}
+#shareImage:hover {
+  background-color: #f5f5f5;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+}
+
+/* ปุ่มปิด Preview */
+/* The inline style in HTML (top: 10px; right: 10px; z-index: 2; position: absolute;) handles positioning relative to wrapper */
+#closePreview {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  /* Adjust size via SVG width/height */
+  line-height: 0; /* Prevent extra space */
+  pointer-events: auto;
+}
+
+/* --- CSS สำหรับ Model Selector --- */
+#modelSelectorContainer {
+  position: fixed; /* ให้ลอยอยู่เหนือเนื้อหาอื่น */
+  top: 20px; /* ระยะห่างจากขอบบนของ viewport */
+  left: 50%; /* เริ่มจากกึ่งกลางแนวนอน */
+  transform: translateX(
+    -50%
+  ); /* ย้ายกลับมาครึ่งหนึ่งของความกว้างตัวเองเพื่อให้กึ่งกลางจริง */
+  z-index: 1000; /* ให้อยู่บนสุด (เหนือ a-scene และ UI อื่นๆ) */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.85
+  ); /* พื้นหลังสีขาวโปร่งแสงเล็กน้อย */
+  padding: 10px 15px; /* ระยะห่างภายใน container */
+  border-radius: 25px; /* ทำให้ขอบโค้งมน */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* เพิ่มเงาให้ดูมีมิติ */
+  display: flex; /* ใช้ flexbox สำหรับจัดเรียงปุ่ม */
+  gap: 12px; /* ระยะห่างระหว่างปุ่ม */
+  pointer-events: auto; /* ***สำคัญมาก: ให้ container และปุ่มรับ mouse events ได้*** */
+}
+
+.model-select-button {
+  padding: 8px 18px; /* ขนาด padding ของปุ่ม */
+  background-color: #4a90e2; /* สีพื้นหลังปุ่ม (ตัวอย่างสีฟ้า) */
+  color: white; /* สีตัวอักษร */
+  border: none; /* ไม่มีเส้นขอบ */
+  border-radius: 20px; /* ขอบปุ่มโค้งมน */
+  cursor: pointer; /* เปลี่ยน cursor เป็นรูปมือเมื่อชี้ */
+  font-size: 14px; /* ขนาดตัวอักษร */
+  font-weight: 600; /* ความหนาตัวอักษร */
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease; /* เพิ่ม transition effect */
+  outline: none; /* เอา outline ออกเมื่อ focus */
+}
+
+.model-select-button:hover {
+  background-color: #357abd; /* สีพื้นหลังเมื่อ hover */
+}
+
+.model-select-button:active {
+  background-color: #2a6496; /* สีพื้นหลังเมื่อกด */
+  transform: scale(0.98); /* ทำให้ปุ่มดูเหมือนถูกกดลงไปเล็กน้อย */
+}
+
+.model-select-button.active {
+  /* Style สำหรับปุ่มที่ถูกเลือกอยู่ */
+  background-color: #204d74; /* สีเข้มขึ้นสำหรับปุ่ม active */
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2); /* เพิ่มเงาด้านใน */
+}
